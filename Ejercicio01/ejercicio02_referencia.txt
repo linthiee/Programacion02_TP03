@@ -1,0 +1,53 @@
+#include <iostream>
+#include <fstream>
+#include "../ArchivosBinarios/PlayerData.h"
+
+PlayerData loadPlayerData(std::string filePath);
+void logPlayerData(PlayerData playerData);
+
+void main()
+{
+	PlayerData playerData = loadPlayerData("../ArchivosBinarios/MyPlayer.epstein");
+	logPlayerData(playerData);
+}
+PlayerData loadPlayerData(std::string filePath)
+{
+	PlayerData playerData = PlayerData();
+	try
+	{
+		std::ifstream inputStream = std::ifstream();
+
+		std::cout << "Reading from the player data file...\n";
+
+		inputStream.open(filePath, std::ios::in | std::ios::binary);
+
+		if (!inputStream.is_open())
+			throw std::exception("File couldnt be opened");
+
+		inputStream.read((char*)&playerData, sizeof(PlayerData));
+
+		if (inputStream.fail())
+			throw std::exception("File read failed");
+
+		inputStream.close();
+
+		if (inputStream.is_open())
+			throw std::exception("File couldnt be closed");
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+
+	return playerData;
+}
+
+void logPlayerData(PlayerData playerData)
+{
+	std::cout << "The player's name is: " << playerData.name;
+	std::cout << "\nThe player's level is: " << playerData.level;
+	std::cout << "\nThe player's xp is: " << playerData.xp;
+	std::cout << "\nThe player's strength is: " << playerData.str;
+	std::cout << "\nThe player's dexterity is: " << playerData.dex;
+	std::cout << "\nThe player's wisdom is: " << playerData.wis;
+}

@@ -1,0 +1,88 @@
+#pragma once
+
+struct PlayerData
+{
+	static const int maxNameLength = 15;
+	char name[maxNameLength];
+
+	int level;
+	int xp;
+	float hp;
+	int str;
+	int dex;
+	int wis;
+};
+
+#include <iostream>
+#include <fstream>
+
+#include "playerData.h"
+
+PlayerData getPlayerData();
+void savePlayerData(PlayerData playerData, std::string filePath);
+
+void main()
+{
+	PlayerData playerData = getPlayerData();
+
+	savePlayerData(playerData, "MyPlayer.epstein");
+
+	std::cin.get();
+}
+
+PlayerData getPlayerData()
+{
+	PlayerData playerData = PlayerData();
+
+	std::cout << "Enter the player's name: ";
+	std::cin.getline(playerData.name, PlayerData::maxNameLength);
+
+	std::cout << "\nEnter the player's level: ";
+	std::cin >> playerData.level;
+
+	std::cout << "\nEnter the player's hp: ";
+	std::cin >> playerData.hp;
+
+	std::cout << "\nEnter the player's experience: ";
+	std::cin >> playerData.xp;
+
+	std::cout << "\nEnter the player's strength: ";
+	std::cin >> playerData.str;
+
+	std::cout << "\nEnter the player's dexterity: ";
+	std::cin >> playerData.dex;
+
+	std::cout << "\nEnter the player's wisdom: ";
+	std::cin >> playerData.wis;
+
+	return playerData;
+}
+
+void savePlayerData(PlayerData playerData, std::string filePath)
+{
+	try
+	{
+		std::ofstream outputStream = std::ofstream();
+
+		std::cout << "\nWriting to the player datafile..\n";
+
+		outputStream.open(filePath, std::ios::out | std::ios::binary);
+
+		if (!outputStream.is_open())
+			throw std::exception("The file couldnt be opened");
+
+		outputStream.write((char*)&playerData, sizeof(PlayerData));
+
+		if (outputStream.fail())
+			throw std::exception("The file write failed");
+
+		outputStream.close();
+
+		if (outputStream.is_open())
+			throw std::exception("The file couldnt be closed");
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+}
